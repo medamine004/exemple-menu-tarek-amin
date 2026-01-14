@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Boissons - Café Andalous</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #E9DDCF;
+            color: #3d2c1b;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 120px;
+        }
+
+        .logo-container {
+            text-align: center;
+            padding: 15px 20px 35px;
+        }
+
+        .logo-container img {
+            width: 320px;
+            max-width: 85vw;
+            height: auto;
+            border-radius: 50%;
+            animation: logoAppear 1.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes logoAppear {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-subtitle {
+            max-width: 820px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.5;
+            color: #5F3C13;
+            text-align: center;
+        }
+
+        .category-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem;
+            color: #5F3C13;
+            margin: 25px 0 40px;
+            position: relative;
+        }
+
+        .category-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #5F3C13, transparent);
+            margin: 12px auto 0;
+        }
+
+        .hero-image-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 45px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid #5F3C13;
+            box-shadow: 0 4px 14px rgba(95,60,19,0.2);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .cafe-menu {
+            max-width: 960px;
+            margin: 0 auto 90px;
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .cafe-item {
+            background: linear-gradient(145deg, #ffffff, #f5efe3);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 4px 12px rgba(95,60,19,0.13);
+            animation: fadeInUp 0.7s ease forwards;
+            opacity: 0;
+        }
+
+        .cafe-item:nth-child(odd)  { animation-delay: 0.1s; }
+        .cafe-item:nth-child(even) { animation-delay: 0.25s; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cafe-item-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #5F3C13;
+            flex-shrink: 0;
+        }
+
+        .cafe-details {
+            flex: 1;
+        }
+
+        .cafe-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #3d2c1b;
+        }
+
+        .cafe-price {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: #5F3C13;
+            margin: 3px 0;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .quantity-controls button {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 50%;
+            background: #5F3C13;
+            color: white;
+            font-size: 1.35rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .quantity-controls button:active {
+            transform: scale(0.92);
+        }
+
+        .quantity-controls span {
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        #cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #f8f1e7;
+            border-top: 3px solid #5F3C13;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 14px rgba(0,0,0,0.18);
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #cart-total {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #3d2c1b;
+        }
+
+        #table-input {
+            width: 80px;
+            padding: 8px;
+            text-align: center;
+            border: 2px solid #5F3C13;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+        #order-btn {
+            background: linear-gradient(90deg, #5F3C13, #7a5123);
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        #order-btn:hover {
+            background: linear-gradient(90deg, #4a2f0f, #5F3C13);
+            transform: translateY(-2px);
+        }
+
+        #order-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-button-container {
+            text-align: center;
+            margin: 50px 0 80px;
+        }
+
+        .back-button {
+            background: linear-gradient(to right, #5F3C13, #7a5123);
+            color: white;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(95,60,19,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* MODAL CONFIRMATION (même style que food.html) */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(61,44,27,0.65);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .confirmation-modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .confirmation-modal.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .check-circle {
+            font-size: 4.5rem;
+            color: #2e7d32;
+            margin-bottom: 20px;
+            animation: checkAnim 1.2s ease-in-out;
+        }
+
+        @keyframes checkAnim {
+            0%   { transform: scale(0.4) rotate(-180deg); opacity: 0; }
+            60%  { transform: scale(1.15); }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: #3d2c1b;
+            margin-bottom: 12px;
+        }
+
+        .modal-message {
+            font-size: 1.05rem;
+            color: #5f3c13;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-table-info {
+            font-weight: 500;
+            color: #7a5123;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: #5F3C13;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .close-btn:hover {
+            background: #7a5123;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 520px) {
+            .category-title { font-size: 2.2rem; margin: 20px 0 35px; }
+            .hero-image { height: 140px; }
+            .cafe-item-img { width: 62px; height: 62px; }
+            .cafe-name { font-size: 1.28rem; }
+            .cafe-price { font-size: 1.45rem; }
+            #cart-bar { flex-direction: column; padding: 14px; }
+            #order-btn { width: 100%; padding: 12px; }
+            .confirmation-modal { padding: 28px 20px; }
+            .check-circle { font-size: 3.8rem; }
+            .modal-title { font-size: 1.6rem; }
+        }
+
+        .site-footer {
+            background-color: #3d2c1b;
+            color: #fdfaf5;
+            padding: 80px 20px 60px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+        }
+
+        .footer-text {
+            font-size: 1.4rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .footer-text span {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            display: block;
+            margin-top: 12px;
+        }
+
+        .footer-phone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.6rem;
+        }
+
+        .footer-phone i {
+            font-size: 2rem;
+            color: #5F3C13;
+            margin-bottom: 10px;
+        }
+
+        .footer-phone strong {
+            color: #5F3C13;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .social-links a {
+            color: #fdfaf5;
+            font-size: 2.8rem;
+            transition: all 0.4s ease;
+        }
+
+        .social-links a:hover {
+            color: #5F3C13;
+            transform: scale(1.2);
+        }
+
+        .copyright {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+        @media (max-width: 480px) {
+
+    .logo-container img {
+        width: 180px;
+    }
+
+    .category-title {
+        font-size: 2.1rem;
+        margin: 15px 0 35px;
+    }
+
+    .hero-image {
+        height: 110px;
+    }
+
+    .cafe-menu {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 0 10px;
+    }
+
+    .cafe-item {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .cafe-item img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .cafe-name {
+        font-size: 1.2rem;
+    }
+
+    .cafe-sizes {
+        font-size: 1rem;
+    }
+
+    .nav-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 14px;
+        font-size: 1.05rem;
+    }
+
+    .footer-text {
+        font-size: 1.05rem;
+    }
+
+    .footer-phone a {
+        font-size: 1.5rem;
+    }
+
+    .social-links a {
+        font-size: 2rem;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="image/andalons.png" alt="Café Andalous">
+        <p class="logo-subtitle">
+            Bienvenue chez Andalous – votre refuge cosy où les arômes authentiques du café et du thé se mêlent à une ambiance chaleureuse.
+        </p>
+    </div>
+
+    <h1 class="category-title">Boissons Fraîches & Autres</h1>
+
+    <div class="hero-image-container">
+        <img src="image/boissson.jpg" alt="Boissons rafraîchissantes" class="hero-image">
+    </div>
+
+    <div class="cafe-menu">
+
+        <!-- Sodas & Eaux -->
+        <div class="cafe-item" data-price="8">
+            <img src="image/canette.png" alt="Soda Canette" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Soda Canette</div>
+                <div class="cafe-price">8 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="8">
+            <img src="image/pittellante.png" alt="Pétillante" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Pétillante</div>
+                <div class="cafe-price">8 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="6">
+            <img src="image/eu gazéifée.png" alt="Eau Gazéifiée petit" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Eau Gazéifiée (petit)</div>
+                <div class="cafe-price">6 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="8">
+            <img src="image/eau gazéefie grand.png" alt="Eau Gazéifiée grand" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Eau Gazéifiée (grand)</div>
+                <div class="cafe-price">8 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="4">
+            <img src="image/eau minérale.png" alt="Eau Minérale petit" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Eau Minérale (petit)</div>
+                <div class="cafe-price">4 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="5">
+            <img src="image/eau minérale grand.png" alt="Eau Minérale grand" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Eau Minérale (grand)</div>
+                <div class="cafe-price">5 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jus naturels -->
+        <div class="cafe-item" data-price="12">
+            <img src="image/jus de fraise.png" alt="Jus de Fraise" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Jus de Fraise</div>
+                <div class="cafe-price">12 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="12">
+            <img src="image/jus kiwi.png" alt="Jus Banane Kiwi" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Jus Banane Kiwi</div>
+                <div class="cafe-price">12 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="10">
+            <img src="image/citronade.png" alt="Citronade" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Citronade</div>
+                <div class="cafe-price">10 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="15">
+            <img src="image/mojito.png" alt="Mojito" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Mojito</div>
+                <div class="cafe-price">15 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="10">
+            <img src="image/jus dorange.png" alt="Jus d'Orange" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Jus d'Orange</div>
+                <div class="cafe-price">10 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cafe-item" data-price="15">
+            <img src="image/jus de grenade.png" alt="Jus de Grenade" class="cafe-item-img">
+            <div class="cafe-details">
+                <div class="cafe-name">Jus de Grenade</div>
+                <div class="cafe-price">15 DT</div>
+                <div class="quantity-controls">
+                    <button class="minus">-</button>
+                    <span class="qty">0</span>
+                    <button class="plus">+</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="back-button-container">
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Retour au Menu
+        </a>
+    </div>
+
+    <!-- Barre panier fixe -->
+    <div id="cart-bar">
+        <span id="cart-total">Total : 0 DT</span>
+        <input type="number" id="table-input" placeholder="Table" min="1">
+        <button id="order-btn">Commander via WhatsApp</button>
+    </div>
+
+    <!-- Modal de confirmation (identique à food.html) -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="confirmation-modal" id="modalContent">
+            <i class="fas fa-check-circle check-circle"></i>
+            <h3 class="modal-title">Commande envoyée avec succès !</h3>
+            <p class="modal-message">Merci pour votre commande.<br>Nous la préparons immédiatement.</p>
+            <p class="modal-table-info" id="modalTableInfo"></p>
+            <button class="close-btn" id="closeModalBtn">Fermer</button>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                Merci pour votre fidélité<br>
+                <span>Une expérience unique alliant saveurs authentiques et ambiance chaleureuse</span>
+            </div>
+            <div class="footer-phone">
+                <i class="fas fa-phone-alt"></i>
+                <div>
+                    <strong>56615128</strong>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=100063944715824" target="_blank" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/cafe__andalous/" target="_blank" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+            <div class="copyright">
+                © Café Andalous Musée du Bardo
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.cafe-item');
+            const totalDisplay = document.getElementById('cart-total');
+            const tableInput = document.getElementById('table-input');
+            const orderBtn = document.getElementById('order-btn');
+            const modal = document.getElementById('confirmModal');
+            const modalContent = document.getElementById('modalContent');
+            const closeBtn = document.getElementById('closeModalBtn');
+            const modalTableInfo = document.getElementById('modalTableInfo');
+
+            function updateTotal() {
+                let total = 0;
+                items.forEach(item => {
+                    const qty = Number(item.querySelector('.qty').textContent);
+                    const price = Number(item.dataset.price);
+                    total += qty * price;
+                });
+                totalDisplay.textContent = `Total : ${total} DT`;
+            }
+
+            items.forEach(item => {
+                const minus = item.querySelector('.minus');
+                const plus = item.querySelector('.plus');
+                const qtySpan = item.querySelector('.qty');
+
+                minus.addEventListener('click', () => {
+                    let qty = Number(qtySpan.textContent);
+                    if (qty > 0) {
+                        qtySpan.textContent = qty - 1;
+                        updateTotal();
+                    }
+                });
+
+                plus.addEventListener('click', () => {
+                    let qty = Number(qtySpan.textContent);
+                    qtySpan.textContent = qty + 1;
+                    updateTotal();
+                });
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modalContent.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    orderBtn.disabled = false;
+                }, 400);
+            });
+
+            orderBtn.addEventListener('click', () => {
+                if (orderBtn.disabled) return;
+                orderBtn.disabled = true;
+
+                const table = tableInput.value.trim();
+                if (!table) {
+                    alert("Veuillez indiquer le numéro de votre table !");
+                    orderBtn.disabled = false;
+                    return;
+                }
+
+                const orderLines = [];
+                let grandTotal = 0;
+
+                items.forEach(item => {
+                    const qty = Number(item.querySelector('.qty').textContent);
+                    if (qty > 0) {
+                        const name = item.querySelector('.cafe-name').textContent.trim();
+                        const price = Number(item.dataset.price);
+                        const subtotal = qty * price;
+                        orderLines.push(`• ${name} × ${qty}    ${subtotal} DT`);
+                        grandTotal += subtotal;
+                    }
+                });
+
+                if (orderLines.length === 0) {
+                    alert("Votre panier est vide !");
+                    orderBtn.disabled = false;
+                    return;
+                }
+
+                const now = new Date();
+                const heure = now.toLocaleTimeString('fr-TN', {hour: '2-digit', minute: '2-digit'});
+
+                const message = 
+`📋 NOUVELLE COMMANDE - Café Andalous
+Table : ${table}
+──────────────────────────────
+${orderLines.join('\n')}
+──────────────────────────────
+💰 Total : ${grandTotal} DT
+🕒 Heure : ${heure}`;
+
+                const phone = "21656615128";
+                const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+                // Affichage modal
+                modalTableInfo.textContent = `Table : ${table} • Total : ${grandTotal} DT`;
+                modal.style.display = 'flex';
+                setTimeout(() => modalContent.classList.add('show'), 50);
+
+                // Fermeture automatique après 5 secondes
+                setTimeout(() => {
+                    modalContent.classList.remove('show');
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        orderBtn.disabled = false;
+                    }, 400);
+                }, 5000);
+
+                // Remise à zéro panier + champ table
+                setTimeout(() => {
+                    items.forEach(item => {
+                        item.querySelector('.qty').textContent = '0';
+                    });
+                    updateTotal();
+                    tableInput.value = '';
+                }, 600);
+
+                // Ouverture WhatsApp
+                window.open(whatsappUrl, '_blank');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Food - Café Andalous</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background: #E9DDCF;
+      color: #3d2c1b;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 140px;
+    }
+
+    .logo-container {
+      text-align: center;
+      padding: 20px 16px 40px;
+    }
+    .logo-container img {
+      width: 300px;
+      max-width: 82vw;
+      height: auto;
+      border-radius: 50%;
+      border: 4px solid #5F3C13;
+      box-shadow: 0 6px 20px rgba(95,60,19,0.25);
+    }
+
+    .category-title {
+      font-family: 'Playfair Display', serif;
+      text-align: center;
+      font-size: 2.4rem;
+      color: #5F3C13;
+      margin: 40px 0 30px;
+      position: relative;
+    }
+    .category-title::after {
+      content: '';
+      display: block;
+      width: 90px;
+      height: 3px;
+      background: #5F3C13;
+      margin: 12px auto 0;
+      opacity: 0.7;
+    }
+
+    .cafe-menu {
+      max-width: 980px;
+      margin: 0 auto 100px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 22px;
+    }
+
+    .cafe-item {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      gap: 16px;
+      box-shadow: 0 5px 18px rgba(95,60,19,0.14);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .cafe-item:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 28px rgba(95,60,19,0.22);
+    }
+
+    .cafe-item-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #5F3C13;
+      flex-shrink: 0;
+    }
+
+    .cafe-details { flex:1; }
+    .cafe-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #3d2c1b;
+    }
+    .cafe-price {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #5F3C13;
+      margin: 6px 0 8px;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .quantity-controls button {
+      width: 38px; height: 38px;
+      border: none; border-radius: 50%;
+      background: #5F3C13; color: white;
+      font-size: 1.4rem; font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .quantity-controls button:hover { background: #7a5123; }
+    .quantity-controls button:active { transform: scale(0.92); }
+    .quantity-controls span {
+      min-width: 34px;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    #cart-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #f8f1e7;
+      border-top: 4px solid #5F3C13;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+      z-index: 1000;
+      flex-wrap: wrap;
+    }
+
+    #cart-total {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #3d2c1b;
+      white-space: nowrap;
+    }
+
+    #table-number {
+      width: 90px;
+      padding: 10px;
+      text-align: center;
+      border: 2px solid #5F3C13;
+      border-radius: 10px;
+      font-size: 1.15rem;
+    }
+
+    #order-btn {
+      background: linear-gradient(90deg, #5F3C13, #8a6235);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 50px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    #order-btn:hover {
+      background: linear-gradient(90deg, #4a2f0f, #5F3C13);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(95,60,19,0.35);
+    }
+    #order-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Modal confirmation */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(61,44,27,0.7);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .confirmation-modal {
+      background: white;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 440px;
+      padding: 36px 28px;
+      text-align: center;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+      transform: scale(0.75);
+      opacity: 0;
+      transition: all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .confirmation-modal.show {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .check-circle {
+      font-size: 5rem;
+      color: #2e7d32;
+      margin-bottom: 24px;
+      animation: checkPulse 1.6s ease-in-out;
+    }
+
+    @keyframes checkPulse {
+      0%   { transform: scale(0.5); opacity: 0; }
+      50%  { transform: scale(1.15); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #3d2c1b;
+      margin-bottom: 16px;
+    }
+
+    .modal-message {
+      font-size: 1.1rem;
+      color: #5f3c13;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .modal-info {
+      font-weight: 500;
+      color: #7a5123;
+      margin-bottom: 32px;
+      font-size: 1.05rem;
+    }
+
+    .close-btn {
+      background: #5F3C13;
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .close-btn:hover {
+      background: #7a5123;
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 520px) {
+      .category-title { font-size: 2rem; margin: 30px 0; }
+      .cafe-item-img { width: 70px; height: 70px; }
+      .cafe-name { font-size: 1.3rem; }
+      .cafe-price { font-size: 1.45rem; }
+      #cart-bar { flex-direction: column; padding: 16px; gap: 14px; }
+      #order-btn { width: 100%; padding: 14px; }
+      .confirmation-modal { padding: 28px 20px; }
+      .check-circle { font-size: 4.2rem; }
+      .modal-title { font-size: 1.75rem; }
+    }
+      .site-footer {
+            background-color: #3d2c1b;
+            color: #fdfaf5;
+            padding: 80px 20px 60px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+        }
+
+        .footer-text {
+            font-size: 1.4rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .footer-text span {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            display: block;
+            margin-top: 12px;
+        }
+
+        .footer-phone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.6rem;
+        }
+
+        .footer-phone i {
+            font-size: 2rem;
+            color: #5F3C13;
+            margin-bottom: 10px;
+        }
+
+        .footer-phone strong {
+            color: #5F3C13;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .social-links a {
+            color: #fdfaf5;
+            font-size: 2.8rem;
+            transition: all 0.4s ease;
+        }
+
+        .social-links a:hover {
+            color: #5F3C13;
+            transform: scale(1.2);
+        }
+
+        .copyright {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+        @media (max-width: 480px) {
+
+    .logo-container img {
+        width: 180px;
+    }
+
+    .category-title {
+        font-size: 2.1rem;
+        margin: 15px 0 35px;
+    }
+
+    .hero-image {
+        height: 110px;
+    }
+
+    .cafe-menu {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 0 10px;
+    }
+
+    .cafe-item {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .cafe-item img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .cafe-name {
+        font-size: 1.2rem;
+    }
+
+    .cafe-sizes {
+        font-size: 1rem;
+    }
+
+    .nav-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 14px;
+        font-size: 1.05rem;
+    }
+
+    .footer-text {
+        font-size: 1.05rem;
+    }
+
+    .footer-phone a {
+        font-size: 1.5rem;
+    }
+
+    .social-links a {
+        font-size: 2rem;
+    }
+}
+.back-button-container {
+            text-align: center;
+            margin: 50px 0 80px;
+        }
+
+        .back-button {
+            background: linear-gradient(to right, #5F3C13, #7a5123);
+            color: white;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(95,60,19,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+  </style>
+</head>
+<body>
+
+  <div class="logo-container">
+    <img src="image/andalons.png" alt="Café Andalous">
+  </div>
+
+  <h1 class="category-title">Food</h1>
+
+  <div class="cafe-menu">
+
+    <!-- Frikassés & Soufflés -->
+    <div class="cafe-item" data-price="6">
+      <img src="image/frikasse.png" alt="Frikassé" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Frikassé</div>
+        <div class="cafe-price">6 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cafe-item" data-price="10">
+      <img src="image/soufflé jambe fromage.png" alt="Soufflé Jambon Fromage" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Soufflé Jambon & Fromage</div>
+        <div class="cafe-price">10 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cafe-item" data-price="10">
+      <img src="image/soufle eja thone.png" alt="Soufflé Ejja Thon" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Soufflé Ejja Thon</div>
+        <div class="cafe-price">10 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="category-title">Croissants Salés & Sucrés</h2>
+
+    <div class="cafe-item" data-price="9">
+      <img src="image/croissant salé jambon.png" alt="Croissant Jambon" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Croissant Salé Jambon</div>
+        <div class="cafe-price">9 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cafe-item" data-price="9">
+      <img src="image/croissant fromage.png" alt="Croissant Fromage" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Croissant Fromage</div>
+        <div class="cafe-price">9 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cafe-item" data-price="6">
+      <img src="image/croissant chocolat.png" alt="Croissant Chocolat" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Croissant Chocolat</div>
+        <div class="cafe-price">6 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cafe-item" data-price="6">
+      <img src="image/croissant amaande.png" alt="Croissant Amande" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Croissant Amande</div>
+        <div class="cafe-price">6 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cafe-item" data-price="6">
+      <img src="image/croissant shnek.png" alt="Croissant Shnek" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Croissant Shnek</div>
+        <div class="cafe-price">6 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="category-title">Pizza</h2>
+
+    <div class="cafe-item" data-price="10">
+      <img src="image/pizza.png" alt="Pizza" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Pizza</div>
+        <div class="cafe-price">10 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="category-title">Baguettes Farcies</h2>
+
+    <div class="cafe-item" data-price="10">
+      <img src="image/Baguette Farcie Fromage & Escalope.png" alt="Baguette Fromage Escalope" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Baguette Fromage & Escalope</div>
+        <div class="cafe-price">10 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cafe-item" data-price="10">
+      <img src="image/Baguette Farcie Thon, Jambon & Fromage.png" alt="Baguette Thon Jambon Fromage" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Baguette Thon, Jambon & Fromage</div>
+        <div class="cafe-price">10 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="category-title">Sandwichs Classiques</h2>
+
+    <div class="cafe-item" data-price="12">
+      <img src="image/Sandwich Thon.png" alt="Sandwich Thon" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Sandwich Thon</div>
+        <div class="cafe-price">12 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cafe-item" data-price="12">
+      <img src="image/Sandwich Jambon.png" alt="Sandwich Jambon" class="cafe-item-img">
+      <div class="cafe-details">
+        <div class="cafe-name">Sandwich Jambon</div>
+        <div class="cafe-price">12 DT</div>
+        <div class="quantity-controls">
+          <button class="minus">-</button>
+          <span class="qty">0</span>
+          <button class="plus">+</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="back-button-container">
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i> Retour au Menu
+        </a>
+    </div>
+
+  <!-- Barre de commande fixe -->
+  <div id="cart-bar">
+    <span id="cart-total">Total : 0 DT</span>
+    <input type="number" id="table-number" placeholder="Table" min="1"/>
+    <button id="order-btn">Commander via WhatsApp</button>
+  </div>
+
+  <!-- Modal de confirmation -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="confirmation-modal" id="modalContent">
+      <i class="fas fa-check-circle check-circle"></i>
+      <h3 class="modal-title">Commande envoyée !</h3>
+      <p class="modal-message">Merci pour votre commande.<br>Nous la préparons avec soin.</p>
+      <p class="modal-info" id="modalInfoLine"></p>
+      <button class="close-btn" id="closeModal">Fermer</button>
+    </div>
+  </div>
+  <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                Merci pour votre fidélité<br>
+                <span>Une expérience unique alliant saveurs authentiques et ambiance chaleureuse</span>
+            </div>
+            <div class="footer-phone">
+                <i class="fas fa-phone-alt"></i>
+                <div>
+                    <strong>56615128</strong>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=100063944715824" target="_blank" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/cafe__andalous/" target="_blank" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+            <div class="copyright">
+                © Café Andalous Musée du Bardo
+            </div>
+        </div>
+    </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const items        = document.querySelectorAll('.cafe-item');
+      const totalDisplay = document.getElementById('cart-total');
+      const tableInput   = document.getElementById('table-number');
+      const orderBtn     = document.getElementById('order-btn');
+      const modal        = document.getElementById('confirmModal');
+      const modalContent = document.getElementById('modalContent');
+      const closeBtn     = document.getElementById('closeModal');
+      const modalInfo    = document.getElementById('modalInfoLine');
+
+      function updateTotal() {
+        let sum = 0;
+        items.forEach(el => {
+          const qty = Number(el.querySelector('.qty').textContent);
+          sum += qty * Number(el.dataset.price);
+        });
+        totalDisplay.textContent = `Total : ${sum} DT`;
+      }
+
+      items.forEach(item => {
+        const minus = item.querySelector('.minus');
+        const plus  = item.querySelector('.plus');
+        const qtyEl = item.querySelector('.qty');
+
+        minus.addEventListener('click', () => {
+          let v = Number(qtyEl.textContent);
+          if (v > 0) {
+            qtyEl.textContent = v - 1;
+            updateTotal();
+          }
+        });
+
+        plus.addEventListener('click', () => {
+          let v = Number(qtyEl.textContent);
+          qtyEl.textContent = v + 1;
+          updateTotal();
+        });
+      });
+
+      closeBtn.addEventListener('click', () => {
+        modalContent.classList.remove('show');
+        setTimeout(() => {
+          modal.style.display = 'none';
+          orderBtn.disabled = false;
+        }, 450);
+      });
+
+      orderBtn.addEventListener('click', () => {
+        if (orderBtn.disabled) return;
+        orderBtn.disabled = true;
+
+        const table = tableInput.value.trim();
+        if (!table) {
+          alert("Merci d'indiquer le numéro de table");
+          orderBtn.disabled = false;
+          return;
+        }
+
+        let lines = [];
+        let total = 0;
+
+        items.forEach(item => {
+          const q = Number(item.querySelector('.qty').textContent);
+          if (q > 0) {
+            const name = item.querySelector('.cafe-name').textContent.trim();
+            const p    = Number(item.dataset.price);
+            lines.push(`• ${name} × ${q}   ${q*p} DT`);
+            total += q * p;
+          }
+        });
+
+        if (lines.length === 0) {
+          alert("Votre panier est vide !");
+          orderBtn.disabled = false;
+          return;
+        }
+
+        const heure = new Date().toLocaleTimeString('fr-TN', {hour:'2-digit', minute:'2-digit'});
+
+        const msg = 
+`📋 COMMANDE - Café Andalous
+Table : ${table}
+───────────────────────
+${lines.join('\n')}
+───────────────────────
+Total : ${total} DT
+Heure : ${heure}`;
+
+        const wa = `https://wa.me/21656615128?text=${encodeURIComponent(msg)}`;
+
+        // Modal
+        modalInfo.textContent = `Table ${table} • Total : ${total} DT`;
+        modal.style.display = 'flex';
+        setTimeout(() => modalContent.classList.add('show'), 80);
+
+        // Auto close
+        setTimeout(() => {
+          modalContent.classList.remove('show');
+          setTimeout(() => {
+            modal.style.display = 'none';
+            orderBtn.disabled = false;
+          }, 500);
+        }, 5000);
+
+        // Reset
+        setTimeout(() => {
+          items.forEach(el => el.querySelector('.qty').textContent = '0');
+          updateTotal();
+          tableInput.value = '';
+        }, 700);
+
+        window.open(wa, '_blank');
+      });
+    });
+  </script>
+</body>
+</html>

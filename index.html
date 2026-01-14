@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Café Andalous</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #E9DDCF;
+            color: #3d2c1b;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            
+        }
+
+        .logo-container {
+            text-align: center;
+            padding: 10px 20px 60px; /* Plus d'espace en bas pour le paragraphe */
+            background-color: #E9DDCF;
+        }
+
+        .logo-container img {
+            width: 420px;
+            max-width: 94vw;
+            height: auto;
+            border-radius: 50%;
+            border: none;
+            box-shadow: none;
+            transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation: logoSimpleAppear 1.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        @keyframes logoSimpleAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Paragraphe sous le logo */
+        .logo-subtitle {
+            max-width: 900px;
+            margin: 40px auto 0;
+            padding: 0 20px;
+            font-size: 1.35rem;
+            font-weight: 300;
+            line-height: 1.8;
+            color: #5F3C13; /* Marron profond pour élégance et lisibilité */
+            text-align: center;
+            opacity: 0;
+            animation: fadeInSubtitle 1.6s ease-out 0.9s forwards;
+        }
+
+        @keyframes fadeInSubtitle {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 4.2rem;
+            color: #664E30;
+            margin: 20px 0 70px;
+            position: relative;
+        }
+
+        .menu-title::after {
+            content: '';
+            display: block;
+            width: 140px;
+            height: 4px;
+            background-color: #5F3C13;
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        .section-tab {
+            display: block;
+            position: relative;
+            margin: 30px auto;
+            max-width: 750px;
+            height: 220px;
+            border-radius: 25px;
+            overflow: hidden;
+            text-decoration: none;
+            transition: all 0.5s ease;
+            border: 5px solid #5F3C13;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .section-tab::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+            z-index: 1;
+        }
+        .section-tab:active{
+            transform: scale(0.97);
+        }
+
+        .section-tab img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tab-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 2;
+            width: 100%;
+            padding: 12px;
+        }
+
+        .tab-content i {
+            font-size: 3.2rem;
+            color: #5F3C13;
+            margin-bottom: 14px;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            display: block;
+        }
+
+        .tab-content div {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 18px rgba(0,0,0,0.7);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-title { font-size: 3rem; margin-bottom: 50px; }
+            .section-tab { 
+                height: 180px; 
+                margin: 25px auto; 
+                border-width: 4px; 
+                max-width: 90%; 
+            }
+            .tab-content i { font-size: 2.6rem; }
+            .tab-content div { font-size: 2rem; letter-spacing: 1.5px; }
+            .logo-container img { width: 280px; }
+            .logo-subtitle { 
+                font-size: 1.15rem; 
+                margin: 30px auto 0;
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-tab { height: 160px; }
+            .tab-content i { font-size: 2.3rem; margin-bottom: 10px; }
+            .tab-content div { font-size: 1.8rem; }
+            .logo-subtitle { font-size: 1.05rem; }
+        }
+
+        /* Footer */
+      .site-footer {
+            background-color: #3d2c1b;
+            color: #fdfaf5;
+            padding: 80px 20px 60px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+        }
+
+        .footer-text {
+            font-size: 1.4rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .footer-text span {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            display: block;
+            margin-top: 12px;
+        }
+
+        .footer-phone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.6rem;
+        }
+
+        .footer-phone i {
+            font-size: 2rem;
+            color: #5F3C13;
+            margin-bottom: 10px;
+        }
+
+        .footer-phone strong {
+            color: #5F3C13;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .social-links a {
+            color: #fdfaf5;
+            font-size: 2.8rem;
+            transition: all 0.4s ease;
+        }
+
+        .social-links a:hover {
+            color: #5F3C13;
+            transform: scale(1.2);
+        }
+
+        .copyright {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+        
+  @media (max-width: 768px) {
+            .menu-title { font-size: 3.2rem; }
+            .section-tab { height: 180px; width: 92vw; border-width: 4px; }
+            .tab-content i { font-size: 2.6rem; }
+            .tab-content div { font-size: 2rem; }
+            .logo-subtitle { font-size: 1.15rem; }
+            .logo-container img { width: 75vw; max-width: 300px; }
+        }
+        @media (max-width: 480px) {
+            .menu-title { font-size: 2.8rem; }
+            .section-tab { height: 160px; }
+            .tab-content i { font-size: 2.3rem; }
+            .tab-content div { font-size: 1.8rem; }
+            .logo-subtitle { font-size: 1.05rem; }
+        }
+        @media (max-width: 360px) {
+            .menu-title { font-size: 2.4rem; }
+            .section-tab { height: 140px; }
+            .tab-content i { font-size: 2rem; }
+            .tab-content div { font-size: 1.6rem; }
+            .logo-container img { width: 70vw; max-width: 240px; }
+            .logo-subtitle { font-size: 1rem; }
+        }
+        @media (max-width: 768px) {
+    .menu-title {
+        font-size: 3rem;
+        margin-bottom: 50px;
+    }
+
+    .section-tab {
+        height: 180px;
+        width: 92vw;
+        border-width: 4px;
+    }
+
+    .tab-content i {
+        font-size: 2.6rem;
+    }
+
+    .tab-content div {
+        font-size: 2rem;
+        letter-spacing: 1.5px;
+    }
+
+    .logo-container img {
+        width: 75vw;
+        max-width: 300px;
+    }
+
+    .logo-subtitle {
+        font-size: 1.15rem;
+        padding: 0 15px;
+    }
+
+    .footer-text {
+        font-size: 1.2rem;
+    }
+
+    .footer-phone strong {
+        font-size: 1.6rem;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .menu-title {
+        font-size: 2.6rem;
+    }
+
+    .section-tab {
+        height: 155px;
+    }
+
+    .tab-content i {
+        font-size: 2.2rem;
+    }
+
+    .tab-content div {
+        font-size: 1.7rem;
+    }
+
+    .logo-subtitle {
+        font-size: 1.05rem;
+    }
+
+    .social-links a {
+        font-size: 2.2rem;
+    }
+}
+
+/* Very small phones (old / mini) */
+@media (max-width: 360px) {
+    .menu-title {
+        font-size: 2.3rem;
+    }
+
+    .section-tab {
+        height: 140px;
+    }
+
+    .tab-content i {
+        font-size: 2rem;
+    }
+
+    .tab-content div {
+        font-size: 1.6rem;
+    }
+
+    .logo-container img {
+        width: 70vw;
+        max-width: 240px;
+    }
+
+    .logo-subtitle {
+        font-size: 1rem;
+    }
+}
+    
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="image/andalons.png" alt="Café Andalous">
+
+        <!-- Paragraphe sous le logo -->
+        <p class="logo-subtitle">
+            Bienvenue au Café Andalous, un havre de paix niché au cœur du Musée du Bardo. 
+            Dégustez nos cafés artisanaux, thés parfumés et spécialités gourmandes dans une ambiance authentique et chaleureuse. 
+            Un moment de détente unique alliant culture et saveurs.
+        </p>
+    </div>
+
+    <h1 class="menu-title">Menu</h1>
+
+    <a href="cafe.html" class="section-tab">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Café">
+        <div class="tab-content">
+            <i class="fas fa-coffee"></i>
+            <div>Café</div>
+        </div>
+    </a>
+
+    <a href="boisson.html" class="section-tab">
+        <img src="image/boisson.jpg" alt="Boissons">
+        <div class="tab-content">
+            <i class="fas fa-cocktail"></i>
+            <div>Boissons</div>
+        </div>
+    </a>
+
+    <a href="food.html" class="section-tab">
+        <img src="image/food.jpg" alt="Food">
+        <div class="tab-content">
+            <i class="fas fa-pizza-slice"></i>
+            <div>Food</div>
+        </div>
+    </a>
+
+    <!-- Ajoute ici les autres sections si besoin (thé, jus, dessert, etc.) -->
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                Merci pour votre fidélité<br>
+                <span>Une expérience unique alliant saveurs authentiques et ambiance chaleureuse</span>
+            </div>
+            <div class="footer-phone">
+                <i class="fas fa-phone-alt"></i>
+                <div>
+                    <strong>56615128</strong>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=100063944715824" target="_blank" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/cafe__andalous/" target="_blank" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+            <div class="copyright">
+                © Café Andalous Musée du Bardo
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
