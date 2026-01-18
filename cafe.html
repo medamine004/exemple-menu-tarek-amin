@@ -346,91 +346,91 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const cafeMenu     = document.querySelector('.cafe-menu');
-        const totalDisplay = document.getElementById('cart-total');
-        const tableInput   = document.getElementById('table-input');
-        const orderBtn     = document.getElementById('order-btn');
-        const modal        = document.getElementById('confirmModal');
-        const modalContent = document.getElementById('modalContent');
-        const closeBtn     = document.getElementById('closeModalBtn');
-        const modalTable   = document.getElementById('modalTableInfo');
+  const cafeMenu     = document.querySelector('.cafe-menu');
+  const totalDisplay = document.getElementById('cart-total');
+  const tableInput   = document.getElementById('table-input');
+  const orderBtn     = document.getElementById('order-btn');
+  const modal        = document.getElementById('confirmModal');
+  const modalContent = document.getElementById('modalContent');
+  const closeBtn     = document.getElementById('closeModalBtn');
+  const modalTable   = document.getElementById('modalTableInfo');
 
-        // === CONFIGURATION GOOGLE SHEETS ===
-       const spreadsheetId = '11mtz2P0uvdS-Tm_f6Zs8aLS4VZpHXKJaFcIS9H-AYvg';
-const sheetName = 'cafedigitalMenu-Admin';
+  const spreadsheetId = '11mtz2P0uvdS-Tm_f6Zs8aLS4VZpHXKJaFcIS9H-AYvg';
+  const sheetName = 'cafedigitalMenu-Admin';
+  const query = 'select *';
 
-const query = `
-select *
-where (D = 'Cafe' or D = 'The')
-and E = 'yes'
-order by D, B
-`;
-const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?` +
-            `tqx=out:json&sheet=${encodeURIComponent(sheetName)}` +
-            `&tq=${encodeURIComponent(query)}`;
+  const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?` +
+              `tqx=out:json&sheet=${encodeURIComponent(sheetName)}` +
+              `&tq=${encodeURIComponent(query)}`;
 
-        fetch(url)
-            .then(r => {
-                if (!r.ok) throw new Error("Erreur réseau " + r.status);
-                return r.text();
-            })
-           
-  .then(text => {
-  const jsonStr = text.substring(
-    text.indexOf('{'),
-    text.lastIndexOf('}') + 1
+  fetch(url)
+    .then(r => r.text())
+    .then(text => {
+      const jsonStr = text.substring(
+        text.indexOf('{'),
+        text.lastIndexOf('}') + 1
+      );
+
+      const data = JSON.parse(jsonStr);
+      const rows = data.table.rows || [];
+      console.log(
+  rows.map(r => r.c?.map(c => c?.v))
+);
+     const filteredRows = rows.filter(row => {
+  const c = row.c || [];
+  const category  = (c[3]?.v || '').toString().toLowerCase();
+  const available = (c[4]?.v || '').toString().toLowerCase();
+
+  return (
+    available.includes('yes') &&
+    (
+      category.includes('cafe') ||
+      category.includes('the')  ||
+      category.includes('thé')
+    )
   );
+});
+      if (filteredRows.length === 0) {
+        cafeMenu.innerHTML = '<p style="text-align:center;padding:5rem;color:#5F3C13;">Aucun produit disponible actuellement...</p>';
+        return;
+      }
 
-  const data = JSON.parse(jsonStr);
-  const rows = data.table.rows;
-                if (rows.length === 0) {
-                    cafeMenu.innerHTML = '<p style="text-align:center;padding:5rem;color:#5F3C13;">Aucun produit disponible actuellement...</p>';
-                    return;
-                }
+      let theTitleAdded = false;
 
-                let theTitleAdded = false;
+      filteredRows.forEach(row => {
+        const c = row.c || [];
+        const name  = c[1]?.v || '—';
+        const price = Number(c[2]?.v) || 0;
+        const cat   = (c[3]?.v || '').toLowerCase();
 
-                rows.forEach((row, i) => {
-                    const c = row.c || [];
+        if (cat === 'the' && !theTitleAdded) {
+          const title = document.createElement('h2');
+          title.className = 'category-title';
+          title.textContent = 'Thé';
+          title.style.gridColumn = '1 / -1';
+          cafeMenu.appendChild(title);
+          theTitleAdded = true;
+        }
 
-                    const name     = c[1]?.v?.trim() || '—';
-                    const price    = Number(c[2]?.v) || 0;
-                    const category = c[3]?.v?.trim() || '';
-                    const image = 'placeholder.jpg';
+        const item = document.createElement('div');
+        item.className = 'cafe-item';
+        item.dataset.price = price;
 
-                    // Titre "Thé" une seule fois
-if (category === 'The' && !theTitleAdded) {
-    const title = document.createElement('h2');
-    title.className = 'category-title';
-    title.textContent = 'Thé';
-    title.style.gridColumn = '1 / -1';
-    title.style.margin = '70px 0 40px';
-    cafeMenu.appendChild(title);
-    theTitleAdded = true;
-}
+        item.innerHTML = `
+          <img src="image/placeholder.jpg" class="cafe-item-img">
+          <div class="cafe-details">
+            <div class="cafe-name">${name}</div>
+            <div class="cafe-price">${price} DT</div>
+            <div class="quantity-controls">
+              <button class="minus">-</button>
+              <span class="qty">0</span>
+              <button class="plus">+</button>
+            </div>
+          </div>
+        `;
 
-                    const item = document.createElement('div');
-                    item.className = 'cafe-item';
-                    item.dataset.price = price;
-                    item.style.animationDelay = `${i * 0.07 + 0.15}s`;
-
-                    item.innerHTML = `
-                        <img src="image/${image}" alt="${name}" class="cafe-item-img" loading="lazy"
-                             onerror="this.src='image/placeholder.jpg'">
-                        <div class="cafe-details">
-                            <div class="cafe-name">${name}</div>
-                            <div class="cafe-price">${price} DT</div>
-                            <div class="quantity-controls">
-                                <button class="minus">-</button>
-                                <span class="qty">0</span>
-                                <button class="plus">+</button>
-                            </div>
-                        </div>
-                    `;
-
-                    cafeMenu.appendChild(item);
-                });
-
+        cafeMenu.appendChild(item);
+      });
                 // Gestion panier
                 const items = document.querySelectorAll('.cafe-item');
 
