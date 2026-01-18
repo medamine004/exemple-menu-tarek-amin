@@ -359,11 +359,7 @@
        const spreadsheetId = '11mtz2P0uvdS-Tm_f6Zs8aLS4VZpHXKJaFcIS9H-AYvg';
 const sheetName = 'cafedigitalMenu-Admin';
 
-const query = `
-select *
-where D = "Cafe" or D = "The"
-order by D, B
-`;
+const query = 'select * where (D = "Cafe" or D = "The") order by D, B';
 
 const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?` +
             `tqx=out:json&sheet=${encodeURIComponent(sheetName)}` +
