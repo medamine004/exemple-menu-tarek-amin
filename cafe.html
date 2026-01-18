@@ -358,7 +358,12 @@
         // === CONFIGURATION GOOGLE SHEETS ===
         const spreadsheetId = '11mtz2P0uvdS-Tm_f6Zs8aLS4VZpHXKJaFcIS9H-AYvg'; // ←←← IMPORTANT : votre ID Google Sheet
         const sheetName     = 'cafedigitalMenu-Admin';
-        const query         = 'select * where (D = "Cafe" or D = "Thé") and E = "yes" order by D, B';
+        const query = `
+select *
+where (D = "Cafe" or D = "The")
+and E = "yes"
+order by D, B
+`;
 
         const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?` +
                     `tqx=out:json&sheet=${encodeURIComponent(sheetName)}` +
@@ -394,15 +399,15 @@
                     const image    = c[5]?.v?.trim() || 'placeholder.jpg';
 
                     // Titre "Thé" une seule fois
-                    if (category === 'Thé' && !theTitleAdded) {
-                        const title = document.createElement('h2');
-                        title.className = 'category-title';
-                        title.textContent = 'Thé';
-                        title.style.gridColumn = '1 / -1';
-                        title.style.margin = '70px 0 40px';
-                        cafeMenu.appendChild(title);
-                        theTitleAdded = true;
-                    }
+if (category === 'The' && !theTitleAdded) {
+    const title = document.createElement('h2');
+    title.className = 'category-title';
+    title.textContent = 'Thé';
+    title.style.gridColumn = '1 / -1';
+    title.style.margin = '70px 0 40px';
+    cafeMenu.appendChild(title);
+    theTitleAdded = true;
+}
 
                     const item = document.createElement('div');
                     item.className = 'cafe-item';
