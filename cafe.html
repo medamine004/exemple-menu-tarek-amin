@@ -396,7 +396,7 @@ order by D, B
                     const name     = c[1]?.v?.trim() || '—';
                     const price    = Number(c[2]?.v) || 0;
                     const category = c[3]?.v?.trim() || '';
-                    const image    = c[5]?.v?.trim() || 'placeholder.jpg';
+                    const image = 'placeholder.jpg';
 
                     // Titre "Thé" une seule fois
 if (category === 'The' && !theTitleAdded) {
