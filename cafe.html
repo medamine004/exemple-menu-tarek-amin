@@ -361,8 +361,9 @@ const sheetName = 'cafedigitalMenu-Admin';
 
 const query = `
 select *
-where (D = 'Cafe' or D = 'Café' or D = 'The' or D = 'Thé')
-and lower(E) = 'yes'
+where (D = 'Cafe' or D = 'The')
+and E = 'yes'
+order by D, B
 `;
 const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?` +
             `tqx=out:json&sheet=${encodeURIComponent(sheetName)}` +
