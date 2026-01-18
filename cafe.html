@@ -361,8 +361,7 @@ const sheetName = 'cafedigitalMenu-Admin';
 
 const query = `
 select *
-where (D contains "Ca" or D contains "Th")
-and E = "yes"
+where D = "Cafe" or D = "The"
 order by D, B
 `;
 
