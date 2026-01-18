@@ -370,15 +370,15 @@ const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?` +
                 if (!r.ok) throw new Error("Erreur réseau " + r.status);
                 return r.text();
             })
-            .then(text => {
-                let jsonStr = text
-                    .replace(/^\/\*O_o\*\//, '')
-                    .replace(/^google\.visualization\.Query\.setResponse\(/, '')
-                    .replace(/\);?$/, '');
+           
+  .then(text => {
+  const jsonStr = text.substring(
+    text.indexOf('{'),
+    text.lastIndexOf('}') + 1
+  );
 
-                const data = JSON.parse(jsonStr);
-                const rows = data.table?.rows || [];
-
+  const data = JSON.parse(jsonStr);
+  const rows = data.table.rows;
                 if (rows.length === 0) {
                     cafeMenu.innerHTML = '<p style="text-align:center;padding:5rem;color:#5F3C13;">Aucun produit disponible actuellement...</p>';
                     return;
