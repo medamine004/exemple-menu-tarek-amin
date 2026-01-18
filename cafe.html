@@ -373,9 +373,8 @@
 
       const data = JSON.parse(jsonStr);
       const rows = data.table.rows || [];
-      console.log(
-  rows.map(r => r.c?.map(c => c?.v))
-);
+     
+
      const filteredRows = rows.filter(row => {
   const c = row.c || [];
   const category  = (c[3]?.v || '').toString().toLowerCase();
@@ -417,7 +416,7 @@
         item.dataset.price = price;
 
         item.innerHTML = `
-          <img src="image/placeholder.jpg" class="cafe-item-img">
+          <img src="image/andalons.png" class="cafe-item-img">
           <div class="cafe-details">
             <div class="cafe-name">${name}</div>
             <div class="cafe-price">${price} DT</div>
