@@ -356,18 +356,19 @@
         const modalTable   = document.getElementById('modalTableInfo');
 
         // === CONFIGURATION GOOGLE SHEETS ===
-        const spreadsheetId = '11mtz2P0uvdS-Tm_f6Zs8aLS4VZpHXKJaFcIS9H-AYvg'; // ←←← IMPORTANT : votre ID Google Sheet
-        const sheetName     = 'cafedigitalMenu-Admin';
-      const query = `
+       const spreadsheetId = '11mtz2P0uvdS-Tm_f6Zs8aLS4VZpHXKJaFcIS9H-AYvg';
+const sheetName = 'cafedigitalMenu-Admin';
+
+const query = `
 select *
-where (D contains 'Ca' or D contains 'Th')
-and E = 'yes'
+where (D = "Cafe" or D = "The")
+and E = "yes"
 order by D, B
 `;
 
-        const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?` +
-                    `tqx=out:json&sheet=${encodeURIComponent(sheetName)}` +
-                    `&tq=${encodeURIComponent(query)}`;
+const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?` +
+            `tqx=out:json&sheet=${encodeURIComponent(sheetName)}` +
+            `&tq=${encodeURIComponent(query)}`;
 
         fetch(url)
             .then(r => {
